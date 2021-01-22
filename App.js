@@ -1,21 +1,47 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
-export default function App() {
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+
+import Home from "./components/home";
+import Login from "./components/login";
+import HeaderComponents from "./components/header";
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#11698e",
+  },
+};
+
+const Stack = createStackNavigator();
+
+function MyStack() {
+  const [inicio , setInicio] = useState(false)
+  function handlerIn(){
+    setInicio(false)
+  }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Stack.Navigator screenOptions={{
+      header: (props) => <HeaderComponents {...props} />
+    }}>
+      <Stack.Screen name="Login" component={Login}/>
+      <Stack.Screen name="Home" component={Home} />
+    </Stack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const [login, setLogin] = useState(false);
+  return (
+    <NavigationContainer>
+      <PaperProvider theme={theme}>
+        <MyStack>
+          {login ? <Home /> : <Login />}
+        </MyStack>
+      </PaperProvider>
+    </NavigationContainer>
+  );
+}
